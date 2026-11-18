@@ -1,0 +1,6 @@
+flask>=3.0
+gunicorn>=22.0
+torch>=2.2
+transformers>=4.44
+pillow>=10.0
+sentencepiece>=0.2

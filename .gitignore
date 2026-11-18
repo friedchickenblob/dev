@@ -1,0 +1,21 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Python (ocr service)
+__pycache__/
+*.pyc
+
+# OCR deploy secrets
+ocr/.env
+
+# jordanckwan.dev build output
+dist/
+
+# Wrangler local cache
+.wrangler/
