@@ -1,0 +1,40 @@
+# Deploys jordanckwan.dev (Cloudflare Worker "jordanckwan-dev") whenever
+# main is pushed. Same two steps as deploy/DEPLOY-dev.md:
+#   sh deploy/build-dev.sh
+#   npx wrangler deploy --config deploy/wrangler.jsonc
+#
+# Needs one repository secret: CLOUDFLARE_API_TOKEN (see deploy/DEPLOY-dev.md).
+# The account id is already in deploy/wrangler.jsonc.
+name: Deploy jordanckwan.dev
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One deploy at a time; a newer push replaces a queued older one.
+concurrency:
+  group: deploy-dev
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build dist/
+        run: sh deploy/build-dev.sh
+
+      - name: Deploy to Cloudflare
+        run: npx --yes wrangler@4 deploy --config deploy/wrangler.jsonc
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

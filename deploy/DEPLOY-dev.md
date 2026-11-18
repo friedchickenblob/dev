@@ -18,21 +18,33 @@ the favicon is the Dream Team Hub one, mirrored horizontally
 
 ## Updating the .dev site
 
-It does **not** update when you push to GitHub. Run, from the project folder:
+Pushing to `main` deploys it automatically: the GitHub Actions workflow
+`.github/workflows/deploy-dev.yml` runs `sh deploy/build-dev.sh` and then
+`npx wrangler deploy --config deploy/wrangler.jsonc`. Watch it under the repo's
+**Actions** tab. You can also run it by hand from there (**Run workflow**).
+
+### One-time setup: the Cloudflare API token
+
+1. Cloudflare dashboard > **My Profile > API Tokens > Create Token**.
+2. Use the **Edit Cloudflare Workers** template. Under *Zone Resources*, pick
+   the `jordanckwan.dev` zone (the Worker is attached to that custom domain).
+3. Copy the token, then in GitHub: repo **Settings > Secrets and variables >
+   Actions > New repository secret**, name `CLOUDFLARE_API_TOKEN`, paste it.
+
+The account id is already in `deploy/wrangler.jsonc`, so it is not a secret.
+
+### Deploying by hand
+
+If you ever need to deploy without pushing (wrangler must be logged in with
+`npx wrangler login`):
 
 ```bash
 sh deploy/build-dev.sh
 npx wrangler deploy --config deploy/wrangler.jsonc
 ```
 
-Wrangler must be logged in (`npx wrangler login`). If it says more than one
-account is available, set `CLOUDFLARE_ACCOUNT_ID` to the id that is already in
-`deploy/wrangler.jsonc`.
-
-To redeploy automatically on every push instead, connect the repo in the
-Cloudflare dashboard (Workers & Pages > your `jordanckwan-dev` Worker >
-Settings > Builds) with build command `sh deploy/build-dev.sh` and deploy
-command `npx wrangler deploy --config deploy/wrangler.jsonc`.
+If it says more than one account is available, set `CLOUDFLARE_ACCOUNT_ID` to
+the id that is already in `deploy/wrangler.jsonc`.
 
 ## Thai OCR on the .dev site
 
